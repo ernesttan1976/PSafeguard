@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Entity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name LocalizedName="Drone Reports" SchemaName="cr5f7_dronereport">
+    <LocalizedNames>
+      <LocalizedName description="Drone Reports" languagecode="1033" />
+    </LocalizedNames>
+  </Name>
+  <Attributes>
+    <Attribute PhysicalName="cr5f7_dronereportid" SchemaName="cr5f7_dronereportid">
+      <Type>primarykey</Type>
+      <Name LocalizedName="Drone Report ID">
+        <LocalizedNames>
+          <LocalizedName description="Drone Report ID" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>systemrequired</RequiredLevel>
+    </Attribute>
+    <Attribute PhysicalName="createdon" SchemaName="createdon">
+      <Type>datetime</Type>
+      <Name LocalizedName="Created On">
+        <LocalizedNames>
+          <LocalizedName description="Created On" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_remarks" SchemaName="cr5f7_remarks">
+      <Type>nvarchar</Type>
+      <Name LocalizedName="Remarks">
+        <LocalizedNames>
+          <LocalizedName description="Remarks" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+      <MaxLength>255</MaxLength>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_userid" SchemaName="cr5f7_userid">
+      <Type>nvarchar</Type>
+      <Name LocalizedName="User ID">
+        <LocalizedNames>
+          <LocalizedName description="User ID" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>required</RequiredLevel>
+      <MaxLength>255</MaxLength>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_latitude" SchemaName="cr5f7_latitude">
+      <Type>decimal</Type>
+      <Name LocalizedName="Latitude">
+        <LocalizedNames>
+          <LocalizedName description="Latitude" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>required</RequiredLevel>
+      <Precision>10</Precision>
+      <Scale>6</Scale>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_longitude" SchemaName="cr5f7_longitude">
+      <Type>decimal</Type>
+      <Name LocalizedName="Longitude">
+        <LocalizedNames>
+          <LocalizedName description="Longitude" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>required</RequiredLevel>
+      <Precision>10</Precision>
+      <Scale>6</Scale>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_photourl" SchemaName="cr5f7_photourl">
+      <Type>nvarchar</Type>
+      <Name LocalizedName="Photo URL">
+        <LocalizedNames>
+          <LocalizedName description="Photo URL" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+      <MaxLength>255</MaxLength>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_bearing" SchemaName="cr5f7_bearing">
+      <Type>decimal</Type>
+      <Name LocalizedName="Bearing">
+        <LocalizedNames>
+          <LocalizedName description="Bearing" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+      <Precision>6</Precision>
+      <Scale>2</Scale>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_status" SchemaName="cr5f7_status">
+      <Type>optionset</Type>
+      <Name LocalizedName="Status">
+        <LocalizedNames>
+          <LocalizedName description="Status" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>required</RequiredLevel>
+      <Options>
+        <Option value="0" Label="Pending">
+          <Labels>
+            <Label description="Pending" languagecode="1033" />
+          </Labels>
+        </Option>
+        <Option value="1" Label="Approved">
+          <Labels>
+            <Label description="Approved" languagecode="1033" />
+          </Labels>
+        </Option>
+        <Option value="2" Label="Rejected">
+          <Labels>
+            <Label description="Rejected" languagecode="1033" />
+          </Labels>
+        </Option>
+      </Options>
+      <DefaultValue>0</DefaultValue>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_dronegroup" SchemaName="cr5f7_dronegroup">
+      <Type>nvarchar</Type>
+      <Name LocalizedName="Drone Group">
+        <LocalizedNames>
+          <LocalizedName description="Drone Group" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+      <MaxLength>255</MaxLength>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_adminremarks" SchemaName="cr5f7_adminremarks">
+      <Type>nvarchar</Type>
+      <Name LocalizedName="Admin Remarks">
+        <LocalizedNames>
+          <LocalizedName description="Admin Remarks" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+      <MaxLength>255</MaxLength>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_lasteditor" SchemaName="cr5f7_lasteditor">
+      <Type>nvarchar</Type>
+      <Name LocalizedName="Last Editor">
+        <LocalizedNames>
+          <LocalizedName description="Last Editor" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+      <MaxLength>255</MaxLength>
+    </Attribute>
+    <Attribute PhysicalName="cr5f7_lastedited" SchemaName="cr5f7_lastedited">
+      <Type>datetime</Type>
+      <Name LocalizedName="Last Edited">
+        <LocalizedNames>
+          <LocalizedName description="Last Edited" languagecode="1033" />
+        </LocalizedNames>
+      </Name>
+      <RequiredLevel>none</RequiredLevel>
+    </Attribute>
+  </Attributes>
+</Entity>

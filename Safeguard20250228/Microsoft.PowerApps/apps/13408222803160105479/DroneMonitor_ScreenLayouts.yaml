@@ -1,0 +1,483 @@
+MainScreen:
+  Type: Screen
+  Properties:
+    Width: 1366
+    Height: 768
+    Fill: RGBA(240, 240, 240, 1)
+    LoadingSpinner: DataLoadingSpinner
+    OnVisible: |-
+      ClearCollect(
+          DroneReportsCollection,
+          DroneReports
+      );
+      
+      UpdateContext({
+          isDataLoaded: true,
+          selectedReport: Blank()
+      })
+
+TopNavBar:
+  Type: Rectangle
+  Parent: MainScreen
+  Properties:
+    X: 0
+    Y: 0
+    Width: Parent.Width
+    Height: 60
+    Fill: RGBA(0, 120, 212, 1)
+    ZIndex: 10
+
+AppTitle:
+  Type: Label
+  Parent: TopNavBar
+  Properties:
+    X: 24
+    Y: 12
+    Text: "Drone Monitor"
+    Color: White
+    Font: Segoe UI
+    FontWeight: Bold
+    Size: 24
+    ZIndex: 11
+
+RefreshButton:
+  Type: Button
+  Parent: TopNavBar
+  Properties:
+    X: Parent.Width - 180
+    Y: 12
+    Width: 120
+    Height: 36
+    Text: "Refresh Data"
+    Fill: RGBA(0, 90, 158, 1)
+    Color: White
+    OnSelect: |-
+      ClearCollect(
+          DroneReportsCollection,
+          DroneReports
+      );
+      
+      UpdateContext({
+          isDataLoaded: true
+      })
+    ZIndex: 12
+
+FilterButton:
+  Type: Button
+  Parent: TopNavBar
+  Properties:
+    X: Parent.Width - 320
+    Y: 12
+    Width: 120
+    Height: 36
+    Text: "Filter"
+    Fill: RGBA(0, 90, 158, 1)
+    Color: White
+    OnSelect: |-
+      UpdateContext({
+          showFilterPanel: !showFilterPanel
+      })
+    ZIndex: 12
+
+ContentContainer:
+  Type: Rectangle
+  Parent: MainScreen
+  Properties:
+    X: 0
+    Y: TopNavBar.Height
+    Width: Parent.Width
+    Height: Parent.Height - TopNavBar.Height
+    Fill: Transparent
+    ZIndex: 1
+
+DataTable_DroneReports:
+  Type: DataTable
+  Parent: ContentContainer
+  Properties:
+    X: 24
+    Y: 24
+    Width: (Parent.Width / 2) - 36
+    Height: Parent.Height - 48
+    Items: DroneReportsCollection
+    Columns: |-
+      [
+        {
+          "DisplayName": "ID",
+          "FieldName": "cr5f7_dronereportid",
+          "IsVisible": true
+        },
+        {
+          "DisplayName": "Created",
+          "FieldName": "createdon",
+          "IsVisible": true,
+          "Format": DateTimeFormat.ShortDateTime
+        },
+        {
+          "DisplayName": "User",
+          "FieldName": "cr5f7_userid",
+          "IsVisible": true
+        },
+        {
+          "DisplayName": "Status",
+          "FieldName": "cr5f7_status",
+          "IsVisible": true
+        },
+        {
+          "DisplayName": "Latitude",
+          "FieldName": "cr5f7_latitude",
+          "IsVisible": true
+        },
+        {
+          "DisplayName": "Longitude",
+          "FieldName": "cr5f7_longitude",
+          "IsVisible": true
+        },
+        {
+          "DisplayName": "Drone Group",
+          "FieldName": "cr5f7_dronegroup",
+          "IsVisible": true
+        }
+      ]
+    BorderColor: RGBA(232, 232, 232, 1)
+    OnSelect: |-
+      UpdateContext({
+          selectedReport: ThisItem
+      })
+    ZIndex: 2
+
+Map_DroneLocations:
+  Type: Map
+  Parent: ContentContainer
+  Properties:
+    X: (Parent.Width / 2) + 12
+    Y: 24
+    Width: (Parent.Width / 2) - 36
+    Height: Parent.Height - 48
+    MapProvider: SpatialServices
+    ApiKey: "YOUR_MAP_API_KEY"
+    ZoomLevel: 12
+    Markers: |-
+      ForAll(
+          DroneReportsCollection,
+          {
+              Color: Switch(
+                  cr5f7_status,
+                  0, RGBA(255, 191, 0, 1),  // Pending - Yellow
+                  1, RGBA(0, 176, 80, 1),   // Approved - Green
+                  2, RGBA(255, 0, 0, 1),    // Rejected - Red
+                  RGBA(128, 128, 128, 1)    // Default - Gray
+              ),
+              Latitude: cr5f7_latitude,
+              Longitude: cr5f7_longitude,
+              Title: "Report " & cr5f7_dronereportid,
+              Subtitle: "Status: " & Switch(
+                  cr5f7_status,
+                  0, "Pending",
+                  1, "Approved",
+                  2, "Rejected",
+                  "Unknown"
+              ),
+              Info: {
+                  ReportID: cr5f7_dronereportid,
+                  CreatedOn: createdon,
+                  UserID: cr5f7_userid,
+                  Group: cr5f7_dronegroup,
+                  Remarks: cr5f7_remarks
+              },
+              Image: cr5f7_photourl
+          }
+      )
+    MapStyle: RGBA(242, 242, 242, 1)
+    CenterLatitude: |-
+      If(
+          IsBlank(selectedReport),
+          Average(DroneReportsCollection, cr5f7_latitude),
+          selectedReport.cr5f7_latitude
+      )
+    CenterLongitude: |-
+      If(
+          IsBlank(selectedReport),
+          Average(DroneReportsCollection, cr5f7_longitude),
+          selectedReport.cr5f7_longitude
+      )
+    OnMarkerSelect: |-
+      UpdateContext({
+          selectedReport: LookUp(
+              DroneReportsCollection,
+              cr5f7_dronereportid = ThisMarker.Info.ReportID
+          )
+      })
+    ZIndex: 2
+
+DetailPanel:
+  Type: Rectangle
+  Parent: ContentContainer
+  Properties:
+    X: (Parent.Width / 2) + 12
+    Y: 24
+    Width: (Parent.Width / 2) - 36
+    Height: 200
+    Fill: RGBA(255, 255, 255, 0.9)
+    BorderColor: RGBA(0, 120, 212, 1)
+    BorderThickness: 1
+    Visible: !IsBlank(selectedReport)
+    ZIndex: 3
+
+DetailTitle:
+  Type: Label
+  Parent: DetailPanel
+  Properties:
+    X: 16
+    Y: 12
+    Text: "Report Details: " & If(IsBlank(selectedReport), "", selectedReport.cr5f7_dronereportid)
+    Color: RGBA(0, 120, 212, 1)
+    FontWeight: Bold
+    Size: 16
+    ZIndex: 4
+
+DetailLocation:
+  Type: Label
+  Parent: DetailPanel
+  Properties:
+    X: 16
+    Y: 48
+    Text: |-
+      "Location: " & If(
+          IsBlank(selectedReport),
+          "",
+          Text(selectedReport.cr5f7_latitude, "###.######") & ", " & Text(selectedReport.cr5f7_longitude, "###.######")
+      )
+    Color: RGBA(51, 51, 51, 1)
+    Size: 14
+    ZIndex: 4
+
+DetailStatus:
+  Type: Label
+  Parent: DetailPanel
+  Properties:
+    X: 16
+    Y: 78
+    Text: |-
+      "Status: " & If(
+          IsBlank(selectedReport),
+          "",
+          Switch(
+              selectedReport.cr5f7_status,
+              0, "Pending",
+              1, "Approved",
+              2, "Rejected",
+              "Unknown"
+          )
+      )
+    Color: |-
+      If(
+          IsBlank(selectedReport),
+          RGBA(51, 51, 51, 1),
+          Switch(
+              selectedReport.cr5f7_status,
+              0, RGBA(255, 191, 0, 1),  // Pending - Yellow
+              1, RGBA(0, 176, 80, 1),   // Approved - Green
+              2, RGBA(255, 0, 0, 1),    // Rejected - Red
+              RGBA(51, 51, 51, 1)       // Default - Gray
+          )
+      )
+    FontWeight: Bold
+    Size: 14
+    ZIndex: 4
+
+DetailRemarks:
+  Type: Label
+  Parent: DetailPanel
+  Properties:
+    X: 16
+    Y: 108
+    Text: |-
+      "Remarks: " & If(
+          IsBlank(selectedReport) || IsBlank(selectedReport.cr5f7_remarks),
+          "None",
+          selectedReport.cr5f7_remarks
+      )
+    Color: RGBA(51, 51, 51, 1)
+    Size: 14
+    ZIndex: 4
+
+DetailUser:
+  Type: Label
+  Parent: DetailPanel
+  Properties:
+    X: 16
+    Y: 138
+    Text: |-
+      "Reported by: " & If(
+          IsBlank(selectedReport),
+          "",
+          selectedReport.cr5f7_userid
+      )
+    Color: RGBA(51, 51, 51, 1)
+    Size: 14
+    ZIndex: 4
+
+DetailClose:
+  Type: Button
+  Parent: DetailPanel
+  Properties:
+    X: DetailPanel.Width - 40
+    Y: 12
+    Width: 24
+    Height: 24
+    Text: "X"
+    Fill: RGBA(0, 120, 212, 1)
+    Color: White
+    BorderRadius: 12
+    OnSelect: |-
+      UpdateContext({
+          selectedReport: Blank()
+      })
+    ZIndex: 5
+
+FilterPanel:
+  Type: Rectangle
+  Parent: ContentContainer
+  Properties:
+    X: (Parent.Width / 2) + 12
+    Y: 24
+    Width: (Parent.Width / 2) - 36
+    Height: 200
+    Fill: RGBA(255, 255, 255, 0.9)
+    BorderColor: RGBA(0, 120, 212, 1)
+    BorderThickness: 1
+    Visible: showFilterPanel
+    ZIndex: 6
+
+FilterTitle:
+  Type: Label
+  Parent: FilterPanel
+  Properties:
+    X: 16
+    Y: 12
+    Text: "Filter Reports"
+    Color: RGBA(0, 120, 212, 1)
+    FontWeight: Bold
+    Size: 16
+    ZIndex: 7
+
+FilterStatus:
+  Type: Dropdown
+  Parent: FilterPanel
+  Properties:
+    X: 16
+    Y: 48
+    Width: 160
+    Items: |-
+      [
+          {
+              Value: "All",
+              DisplayValue: "All Statuses"
+          },
+          {
+              Value: "0",
+              DisplayValue: "Pending"
+          },
+          {
+              Value: "1",
+              DisplayValue: "Approved"
+          },
+          {
+              Value: "2",
+              DisplayValue: "Rejected"
+          }
+      ]
+    DefaultSelectedItems: |-
+      [{
+          Value: "All",
+          DisplayValue: "All Statuses"
+      }]
+    ZIndex: 7
+
+FilterGroup:
+  Type: TextInput
+  Parent: FilterPanel
+  Properties:
+    X: 16
+    Y: 88
+    Width: 160
+    HintText: "Filter by drone group"
+    ZIndex: 7
+
+FilterApply:
+  Type: Button
+  Parent: FilterPanel
+  Properties:
+    X: 16
+    Y: 128
+    Width: 100
+    Height: 36
+    Text: "Apply Filter"
+    Fill: RGBA(0, 120, 212, 1)
+    Color: White
+    OnSelect: |-
+      ClearCollect(
+          DroneReportsCollection,
+          If(
+              FilterStatus.Selected.Value = "All",
+              If(
+                  IsBlank(FilterGroup.Text),
+                  DroneReports,
+                  Filter(
+                      DroneReports,
+                      cr5f7_dronegroup = FilterGroup.Text
+                  )
+              ),
+              If(
+                  IsBlank(FilterGroup.Text),
+                  Filter(
+                      DroneReports,
+                      cr5f7_status = Value(FilterStatus.Selected.Value)
+                  ),
+                  Filter(
+                      DroneReports,
+                      cr5f7_status = Value(FilterStatus.Selected.Value) && 
+                      cr5f7_dronegroup = FilterGroup.Text
+                  )
+              )
+          )
+      )
+    ZIndex: 7
+
+FilterReset:
+  Type: Button
+  Parent: FilterPanel
+  Properties:
+    X: 126
+    Y: 128
+    Width: 100
+    Height: 36
+    Text: "Reset"
+    Fill: RGBA(151, 151, 151, 1)
+    Color: White
+    OnSelect: |-
+      Reset(FilterStatus);
+      Reset(FilterGroup);
+      ClearCollect(
+          DroneReportsCollection,
+          DroneReports
+      )
+    ZIndex: 7
+
+FilterClose:
+  Type: Button
+  Parent: FilterPanel
+  Properties:
+    X: FilterPanel.Width - 40
+    Y: 12
+    Width: 24
+    Height: 24
+    Text: "X"
+    Fill: RGBA(0, 120, 212, 1)
+    Color: White
+    BorderRadius: 12
+    OnSelect: |-
+      UpdateContext({
+          showFilterPanel: false
+      })
+    ZIndex: 7

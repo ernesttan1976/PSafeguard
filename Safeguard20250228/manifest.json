@@ -1,0 +1,52 @@
+{
+    "schema": "1.0",
+    "details": {
+      "displayName": "DroneMonitor20250228",
+      "description": "Drone monitoring application with map integration",
+      "createdTime": "2025-02-28T09:55:09.7395983Z",
+      "packageTelemetryId": "db89e109-2cb2-48b0-83cd-e17cf4dbfbc7",
+      "creator": "ERNEST TAN YEE TIT (MINDEF)",
+      "sourceEnvironment": "ERNEST TAN YEE TIT (MINDEF)"
+    },
+    "resources": {
+      "4aca3f23-8523-4d55-8358-b70f0776113d": {
+        "type": "Microsoft.PowerApps/apps",
+        "suggestedCreationType": "Update",
+        "creationType": "New, Update",
+        "details": {
+          "displayName": "DroneMonitor"
+        },
+        "configurableBy": "User",
+        "dependsOn": [
+          "44bf9bfa-e584-4af7-9fb4-c5b95d8e6ecd",
+          "d9a8b6f1-9c2d-4a5b-8c1e-3f2g5h6j7k8l"
+        ]
+      },
+      "44bf9bfa-e584-4af7-9fb4-c5b95d8e6ecd": {
+        "id": "/providers/Microsoft.PowerApps/apis/shared_microsoftspatialservices",
+        "name": "shared_microsoftspatialservices",
+        "type": "Microsoft.PowerApps/apis",
+        "suggestedCreationType": "Existing",
+        "details": {
+          "displayName": "Spatial Services",
+          "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/u/laborbol/partial-builds/1711/1.0.1711.3876/microsoftspatialservices/icon.png"
+        },
+        "configurableBy": "System",
+        "hierarchy": "Child",
+        "dependsOn": []
+      },
+      "d9a8b6f1-9c2d-4a5b-8c1e-3f2g5h6j7k8l": {
+        "id": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+        "name": "shared_commondataserviceforapps",
+        "type": "Microsoft.PowerApps/apis",
+        "suggestedCreationType": "Existing",
+        "details": {
+          "displayName": "Microsoft Dataverse",
+          "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1615/1.0.1615.3163/commondataserviceforapps/icon.png"
+        },
+        "configurableBy": "System",
+        "hierarchy": "Child",
+        "dependsOn": []
+      }
+    }
+  }
